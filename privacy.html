@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quyền riêng tư của Sen</title>
+<meta name="description" content="Sen lưu dữ liệu ở đâu, không làm gì với dữ liệu của bạn, và cách bạn xóa nó.">
+<link rel="icon" href="app/icons/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<style>
+:root{--ground:#EEF2EE;--surface:#FAFCFA;--ink:#1B2724;--ink-2:#4A5A55;--ink-3:#6E7D78;--line:#CAD5CF;--leaf:#2D6A5C;--lotus:#B8466B}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#0F1513;--surface:#161F1C;--ink:#E2EAE6;--ink-2:#AAB9B3;--ink-3:#83938D;--line:#2F3C37;--leaf:#7CC1AE;--lotus:#EC8DAB}}
+:root[data-theme="dark"]{--ground:#0F1513;--surface:#161F1C;--ink:#E2EAE6;--ink-2:#AAB9B3;--ink-3:#83938D;--line:#2F3C37;--leaf:#7CC1AE;--lotus:#EC8DAB}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.7 "Be Vietnam Pro",system-ui,"Segoe UI",sans-serif;padding-inline:20px}
+.doc{max-width:680px;margin-inline:auto;padding-block:40px 72px}
+a{color:var(--leaf)}
+.back{font-weight:600;text-decoration:none}
+h1,h2{font-family:"Bricolage Grotesque","Be Vietnam Pro",system-ui,sans-serif;line-height:1.15;text-wrap:balance}
+h1{font-size:clamp(2.2rem,6vw,3.2rem);font-variation-settings:"wdth" 84;margin:28px 0 8px}
+h2{font-size:22px;font-variation-settings:"wdth" 88;margin:40px 0 10px;padding-top:24px;border-top:1px solid var(--line)}
+.meta{color:var(--ink-3);font-size:14px}
+.summary{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px 20px;margin-top:28px}
+ul{padding-left:20px}
+li+li{margin-top:6px}
+.no li::marker{content:"✕  ";color:var(--lotus)}
+</style>
+</head>
+<body>
+<article class="doc">
+  <a class="back" href="./">← Sen</a>
+  <h1>Quyền riêng tư</h1>
+  <p class="meta">Áp dụng cho bản web và app iOS của Sen · Cập nhật 14/9/2026</p>
+
+  <div class="summary">
+    <p><b>Tóm tắt:</b> mọi thứ bạn nhập vào Sen chỉ nằm trên thiết bị của bạn. Sen không có tài khoản, không có máy chủ lưu nhật ký, nên nhóm phát triển không thể đọc, khôi phục hay chia sẻ dữ liệu của bạn.</p>
+  </div>
+
+  <h2>Sen lưu những gì</h2>
+  <ul>
+    <li>Các lần check-in: tâm trạng, cảm xúc, chủ đề, số giờ ngủ và phần nhật ký bạn tự viết.</li>
+    <li>Câu trả lời và điểm WHO-5.</li>
+    <li>Sổ kỹ năng: bài tập nào bạn đã đánh dấu làm xong.</li>
+    <li>Cài đặt: thời hạn tự xóa, giờ nhắc nhở.</li>
+  </ul>
+
+  <h2>Lưu ở đâu</h2>
+  <ul>
+    <li><b>Bản web:</b> trong bộ nhớ của trình duyệt (localStorage) trên máy bạn đang dùng. Xóa dữ liệu trình duyệt cũng xóa dữ liệu Sen.</li>
+    <li><b>App iOS:</b> trong vùng lưu trữ riêng của app trên iPhone. Xóa app cũng xóa dữ liệu.</li>
+    <li>Phần phân tích để đưa ra gợi ý chạy ngay trên thiết bị, không gửi đi đâu.</li>
+  </ul>
+
+  <h2>Sen không làm</h2>
+  <ul class="no">
+    <li>Không bán, cho thuê hay chia sẻ dữ liệu của bạn.</li>
+    <li>Không dùng nhật ký để huấn luyện mô hình AI.</li>
+    <li>Không có quảng cáo, không có công cụ theo dõi hay phân tích hành vi.</li>
+    <li>Không báo cho trường học, gia đình hay bất kỳ ai về nội dung bạn viết.</li>
+  </ul>
+
+  <h2>Dịch vụ bên ngoài</h2>
+  <ul>
+    <li>Bản web tải phông chữ từ Google Fonts. Khi tải, Google nhận được địa chỉ IP của bạn như mọi lượt tải trang, nhưng không nhận được nội dung bạn nhập.</li>
+    <li>Nhà cung cấp hosting của trang web có thể ghi nhật ký truy cập kỹ thuật (địa chỉ IP, thời gian, trang được mở).</li>
+    <li>Nhắc nhở trên app iOS là thông báo cục bộ do iPhone tự tạo, không đi qua máy chủ nào.</li>
+    <li>Khi bạn bấm gọi đường dây nóng, cuộc gọi đi qua nhà mạng như cuộc gọi bình thường.</li>
+  </ul>
+
+  <h2>Quyền của bạn</h2>
+  <ul>
+    <li>Xóa từng lần check-in ngay trong màn kết quả.</li>
+    <li>Chọn tự xóa dữ liệu cũ sau 30 ngày, 90 ngày (mặc định) hoặc 1 năm.</li>
+    <li>Tải toàn bộ dữ liệu về dạng JSON trong mục Cài đặt.</li>
+    <li>Xóa toàn bộ và rút lại đồng ý bất cứ lúc nào.</li>
+  </ul>
+
+  <h2>Giới hạn của Sen</h2>
+  <p>Sen là AI, không phải nhà trị liệu, không chẩn đoán và có thể sai. Nếu bạn đang gặp nguy hiểm, hãy gọi 111 (24/7), 096 306 1414 (Ngày Mai, 8:00–20:00) hoặc 115.</p>
+
+  <h2>Liên hệ</h2>
+  <p>Nhóm phát triển Sen · <a href="https://github.com/karl-xy1/sen-app/issues">github.com/karl-xy1/sen-app/issues</a> (nội dung gửi ở đây là công khai, đừng ghi thông tin cá nhân hay chuyện riêng)</p>
+</article>
+</body>
+</html>

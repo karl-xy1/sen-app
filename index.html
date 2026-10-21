@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sen — Từ bùn, nở thành sen</title>
+<meta name="description" content="Sen là ứng dụng AI đồng hành chữa lành tâm lý cho người trẻ Việt, thiết kế theo đạo đức AI và hướng tới tác động lâu dài.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sen — Từ bùn, nở thành sen">
+<meta property="og:description" content="Người bạn AI đồng hành chữa lành cho người trẻ Việt. Dữ liệu chỉ lưu trên máy bạn.">
+<meta property="og:image" content="og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#EEF2EE">
+<link rel="icon" href="app/icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-48.png" type="image/png" sizes="48x48">
+<link rel="apple-touch-icon" href="app/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#EEF2EE; --surface:#FAFCFA; --sunk:#E3EAE5; --ink:#1B2724; --ink-2:#4A5A55; --ink-3:#6E7D78;
+  --line:#CAD5CF; --leaf:#2D6A5C; --leaf-soft:#D5E8E1; --lotus:#B8466B; --lotus-soft:#F5DCE4; --on-accent:#FFFFFF;
+  --warn:#8A5410; --warn-soft:#F6E6CD; --crisis:#9E3838; --crisis-soft:#F5DEDB; --phone-edge:#1B2724;
+  --shadow:rgba(27,52,45,.35);
+  --f-display:"Bricolage Grotesque","Be Vietnam Pro",system-ui,"Segoe UI",sans-serif;
+  --f-body:"Be Vietnam Pro",system-ui,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1513; --surface:#161F1C; --sunk:#202B27; --ink:#E2EAE6; --ink-2:#AAB9B3; --ink-3:#83938D;
+    --line:#2F3C37; --leaf:#7CC1AE; --leaf-soft:#1E3530; --lotus:#EC8DAB; --lotus-soft:#3A2330; --on-accent:#14201C;
+    --warn:#E6B46E; --warn-soft:#382B18; --crisis:#F0968F; --crisis-soft:#3B2222; --phone-edge:#040706;
+    --shadow:rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1513; --surface:#161F1C; --sunk:#202B27; --ink:#E2EAE6; --ink-2:#AAB9B3; --ink-3:#83938D;
+  --line:#2F3C37; --leaf:#7CC1AE; --leaf-soft:#1E3530; --lotus:#EC8DAB; --lotus-soft:#3A2330; --on-accent:#14201C;
+  --warn:#E6B46E; --warn-soft:#382B18; --crisis:#F0968F; --crisis-soft:#3B2222; --phone-edge:#040706;
+  --shadow:rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font:16px/1.65 var(--f-body);padding-inline:20px;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1140px;margin-inline:auto}
+h1,h2,h3,h4{font-family:var(--f-display);margin:0;text-wrap:balance;line-height:1.1}
+p{margin:0}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--lotus);outline-offset:3px}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.muted{color:var(--ink-2)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;padding-block:40px 56px;isolation:isolate}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:22px}
+.brand svg{width:30px;height:30px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.hero h1{margin-top:64px;font-size:clamp(3.2rem,9vw,7rem);line-height:.92;letter-spacing:-.02em}
+.hero h1 .heavy{display:block;font-weight:800;font-variation-settings:"wdth" 75}
+.hero h1 .light{display:block;font-weight:250;font-variation-settings:"wdth" 100}
+.hero h1 .light em{font-style:normal;color:var(--lotus);font-weight:500}
+.lede{margin-top:28px;max-width:58ch;font-size:clamp(1.05rem,1.8vw,1.25rem);color:var(--ink-2)}
+.facts{display:flex;flex-wrap:wrap;gap:12px 36px;margin:32px 0 0;padding:0}
+.facts div{display:flex;flex-direction:column}
+.facts dt{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.facts dd{margin:0;font-weight:600}
+
+/* ---------- sections ---------- */
+section.block{padding-block:56px;border-top:1px solid var(--line)}
+.sec-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px 48px;align-items:end;margin-bottom:40px}
+.sec-head h2{font-size:clamp(2.1rem,4.4vw,3.4rem);font-weight:700;font-variation-settings:"wdth" 82;letter-spacing:-.01em;margin-top:8px}
+.sec-head p{max-width:62ch;color:var(--ink-2)}
+
+/* ---------- phones ---------- */
+.screens{display:flex;flex-wrap:wrap;justify-content:center;gap:48px 36px}
+.screen{width:318px;max-width:100%;margin:0;display:flex;flex-direction:column;gap:18px}
+.phone{border-radius:44px;background:var(--phone-edge);padding:10px;box-shadow:0 36px 60px -34px var(--shadow);transition:transform .4s ease}
+.phone.flash{transform:translateY(-6px)}
+.phone-screen{border-radius:35px;background:var(--surface);height:650px;overflow:hidden;display:flex;flex-direction:column;position:relative;font-size:14px;line-height:1.55}
+.status{flex:none;height:40px;display:flex;justify-content:space-between;align-items:center;padding:6px 26px 0;font-size:12px;font-weight:600;position:relative}
+.status::after{content:"";position:absolute;left:50%;top:9px;width:92px;height:24px;margin-left:-46px;border-radius:14px;background:var(--phone-edge)}
+.app{flex:1;overflow-y:auto;padding:10px 20px 18px;display:flex;flex-direction:column;gap:18px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.sos{flex:none;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 20px 14px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-2);background:var(--surface)}
+.sos button{border:0;background:none;padding:4px 0;font-weight:600;color:var(--crisis);cursor:pointer}
+.cap{display:flex;flex-direction:column;gap:6px;padding-inline:4px}
+.cap h3{font-size:22px;font-weight:700;font-variation-settings:"wdth" 88}
+.cap p{font-size:14.5px;color:var(--ink-2)}
+.ethic-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.ethic-chips button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:3px 11px;font-size:12.5px;font-weight:500;color:var(--ink-2);cursor:pointer}
+.ethic-chips button::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--lotus);margin-right:6px;vertical-align:middle}
+.ethic-chips button:hover,.ethic-chips button:focus-visible{border-color:var(--lotus);color:var(--ink)}
+.demo-links{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}
+.demo-links button{border:0;background:none;padding:0;color:var(--leaf);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.spot{outline:2px dashed var(--lotus)!important;outline-offset:4px;border-radius:12px}
+
+/* app internals */
+.a-title{font-family:var(--f-display);font-size:25px;font-weight:700;line-height:1.12;font-variation-settings:"wdth" 90}
+.a-sub{color:var(--ink-2)}
+.a-label{font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:8px;display:flex;justify-content:space-between;gap:8px}
+.a-label small{font-weight:500;color:var(--ink-3);font-size:11.5px}
+.promise{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.promise li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+.promise svg{width:28px;height:28px}
+.promise b{display:block;font-weight:600}
+.promise span{color:var(--ink-2);font-size:13px}
+.consent{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start;background:var(--sunk);padding:12px;border-radius:14px;font-size:13px;cursor:pointer}
+.consent input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--leaf)}
+.btn{display:block;width:100%;border:0;border-radius:999px;padding:13px 18px;background:var(--lotus);color:var(--on-accent);font-weight:600;cursor:pointer;transition:opacity .2s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.small{display:inline-block;width:auto;padding:8px 14px;font-size:13px}
+.mood{display:flex;justify-content:space-between;gap:4px}
+.mood label{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
+.mood input{position:absolute;opacity:0;pointer-events:none}
+.mood .dot{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;transition:border-color .2s}
+.mood .dot i{display:block;border-radius:50%;background:var(--ink-3);transition:background .2s}
+.mood input:checked + .dot{border-color:var(--lotus);border-width:2px}
+.mood input:checked + .dot i{background:var(--lotus)}
+.mood input:focus-visible + .dot{outline:2px solid var(--lotus);outline-offset:2px}
+.mood-name{text-align:center;font-weight:600;margin-top:8px;font-size:13px;color:var(--lotus)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 12px;font-size:13px;cursor:pointer}
+.chips button[aria-pressed="true"]{background:var(--leaf-soft);border-color:var(--leaf);font-weight:600}
+.range{width:100%;accent-color:var(--leaf)}
+.scale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+textarea{width:100%;min-height:104px;resize:vertical;border:1px solid transparent;border-radius:14px;background:var(--sunk);padding:10px 12px;line-height:1.5}
+textarea:focus{border-color:var(--leaf);outline:none}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:12px;cursor:pointer}
+.switch span b{display:block;font-weight:600;font-size:13px}
+.switch span small{color:var(--ink-3);font-size:12px}
+.switch input{appearance:none;flex:none;width:42px;height:24px;border-radius:12px;background:var(--line);position:relative;cursor:pointer;margin:0;transition:background .2s}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--surface);transition:transform .2s}
+.switch input:checked{background:var(--leaf)}
+.switch input:checked::after{transform:translateX(18px)}
+.lockline{display:flex;gap:6px;align-items:center;font-size:12px;color:var(--ink-3)}
+.lockline svg{width:14px;height:14px;flex:none}
+.tag{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);border:1px solid var(--line);border-radius:6px;padding:0 5px}
+
+/* result */
+.reflect{font-size:15.5px;line-height:1.6}
+details.why{font-size:12.5px;color:var(--ink-2)}
+details.why summary{cursor:pointer;font-weight:600;color:var(--leaf)}
+details.why ul{margin:8px 0 0;padding-left:18px}
+.exercise{background:var(--leaf-soft);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.exercise h4{font-size:17px;font-weight:700}
+.box-breath{position:relative;width:132px;height:132px;margin:6px auto;border:2px solid var(--leaf);border-radius:14px;display:grid;place-items:center;text-align:center}
+.box-breath .phase{font-family:var(--f-display);font-weight:600;font-size:16px}
+.box-breath .count{display:block;font-size:12px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.box-breath .runner{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--lotus);top:-8px;left:-8px}
+.box-breath.on .runner{animation:box 16s linear infinite}
+@keyframes box{0%{top:-8px;left:-8px}25%{top:-8px;left:calc(100% - 6px)}50%{top:calc(100% - 6px);left:calc(100% - 6px)}75%{top:calc(100% - 6px);left:-8px}100%{top:-8px;left:-8px}}
+.steps{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.r-sec h4{font-size:15px;font-weight:700;margin-bottom:6px}
+.r-sec ul.keep{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.r-sec ul.keep li{padding-left:14px;position:relative}
+.r-sec ul.keep li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--leaf)}
+.spark{width:100%;height:auto;display:block}
+.note-warn{background:var(--warn-soft);border-radius:14px;padding:12px;font-size:13px;display:flex;flex-direction:column;gap:8px}
+.note-warn b{color:var(--warn)}
+.fine{font-size:11.5px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:10px;display:flex;justify-content:space-between;gap:8px;align-items:start}
+.fine button{flex:none;border:0;background:none;color:var(--crisis);font-size:11.5px;font-weight:600;cursor:pointer;padding:0}
+.crisis{display:flex;flex-direction:column;gap:12px}
+.crisis .a-title{color:var(--ink)}
+.callbtn{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;text-align:left;width:100%;border:1px solid var(--line);background:var(--surface);border-radius:16px;padding:11px 14px;cursor:pointer}
+.callbtn.first{background:var(--crisis-soft);border-color:transparent}
+.callbtn b{font-size:17px;font-variant-numeric:tabular-nums;font-family:var(--f-display)}
+.callbtn span{grid-column:1;font-size:12px;color:var(--ink-2)}
+.callbtn i{grid-row:1/span 2;grid-column:2;font-style:normal;font-weight:600;font-size:12.5px;color:var(--crisis)}
+.paused{font-size:12px;color:var(--ink-2);background:var(--sunk);border-radius:12px;padding:10px 12px}
+.loading{opacity:.35;transition:opacity .25s}
+
+/* ---------- ethics ---------- */
+.flow{display:grid;grid-template-columns:1fr 1.15fr 1.5fr 1fr;gap:28px;align-items:center;margin-bottom:48px}
+.flow > div{position:relative}
+.flow > div:not(:last-child)::after{content:"→";position:absolute;right:-22px;top:50%;transform:translateY(-50%);color:var(--ink-3);font-size:18px}
+.node{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--surface);font-size:14px}
+.node b{display:block;font-family:var(--f-display);font-size:16px;font-weight:700}
+.node span{color:var(--ink-2);font-size:13px}
+.node.gate{border:2px solid var(--leaf)}
+.fork{display:flex;flex-direction:column;gap:10px}
+.node.stop{background:var(--crisis-soft);border-color:transparent}
+.principles{list-style:none;margin:0;padding:0}
+.principles li{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1fr) minmax(0,1fr);gap:12px 40px;padding-block:22px;border-top:1px solid var(--line)}
+.principles li:last-child{border-bottom:1px solid var(--line)}
+.principles h3{font-size:22px;font-weight:700;font-variation-settings:"wdth" 86}
+.principles .gist{font-size:14px;color:var(--ink-2);margin-top:6px}
+.do-dont{font-size:14.5px}
+.do-dont .k{display:block;font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.do .k{color:var(--leaf)}
+.dont .k{color:var(--crisis)}
+
+/* ---------- long-term ---------- */
+.stages{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;list-style:none;margin:0 0 56px;padding:0;position:relative}
+.stages::before{content:"";position:absolute;left:24px;right:24px;top:24px;height:1px;background:var(--line);z-index:0}
+.stage{position:relative;display:flex;flex-direction:column;gap:10px}
+.stage .glyph{width:48px;height:48px;border-radius:50%;background:var(--ground);border:1px solid var(--line);display:grid;place-items:center;position:relative;z-index:1}
+.stage .glyph svg{width:30px;height:30px}
+.stage .when{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-top:4px}
+.stage h3{font-size:26px;font-weight:700;font-variation-settings:"wdth" 80}
+.stage h3 small{display:block;font-family:var(--f-body);font-size:15px;font-weight:600;color:var(--lotus);margin-top:2px}
+.stage dl{margin:0;display:flex;flex-direction:column;gap:10px;font-size:14px}
+.stage dt{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.stage dd{margin:0}
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-bottom:12px}
+.chart{margin:0;position:relative}
+.chart h3{font-size:18px;font-weight:700}
+.chart p{font-size:13.5px;color:var(--ink-2);margin:2px 0 10px}
+.chart svg{width:100%;height:auto;display:block;overflow:visible}
+.chart svg text{fill:var(--ink-3);font-size:11px;font-family:var(--f-body)}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--ground);font-size:12.5px;padding:5px 9px;border-radius:8px;white-space:nowrap;transform:translate(-50%,-120%);font-variant-numeric:tabular-nums}
+.chart-note{font-size:13px;color:var(--ink-3);margin-bottom:8px}
+details.table-view{font-size:13.5px;margin-bottom:48px}
+details.table-view summary{cursor:pointer;color:var(--leaf);font-weight:600}
+.tbl-wrap{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 14px 10px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+td.num{font-variant-numeric:tabular-nums}
+.risk td:first-child{font-weight:600;min-width:150px}
+.risk td{min-width:180px}
+h3.sub{font-size:24px;font-weight:700;font-variation-settings:"wdth" 86;margin-bottom:14px}
+
+footer{padding-block:40px 56px;border-top:1px solid var(--line);font-size:13.5px;color:var(--ink-2);display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px}
+footer b{color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:var(--ground);padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;max-width:calc(100% - 32px);z-index:10}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:900px){
+  .sec-head{grid-template-columns:1fr}
+  .flow{grid-template-columns:1fr;gap:26px}
+  .flow > div:not(:last-child)::after{content:"↓";right:auto;left:22px;top:auto;bottom:-24px;transform:none}
+  .principles li{grid-template-columns:1fr;gap:10px}
+  .stages{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .stages::before{display:none}
+  .charts{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .stages{grid-template-columns:1fr}
+  .hero h1{margin-top:44px}
+  .phone-screen{height:620px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .box-breath.on .runner{animation:none}
+  .phone,.toast{transition:none}
+}
+
+/* ---------- site additions ---------- */
+.site-nav{display:flex;align-items:center;gap:6px 22px;flex-wrap:wrap;font-size:14.5px}
+.site-nav a{color:var(--ink-2);text-decoration:none;font-weight:500}
+.site-nav a:hover{color:var(--ink)}
+.site-nav a.cta{background:var(--lotus);color:var(--on-accent);padding:8px 16px;border-radius:999px;font-weight:600}
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.btn-site{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:13px 22px;font-weight:600;text-decoration:none;background:var(--lotus);color:var(--on-accent)}
+.btn-site.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.get{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.get article{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:12px}
+.get h3{font-size:26px;font-weight:700;font-variation-settings:"wdth" 84}
+.get ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--ink-2);font-size:14.5px}
+.get .btn-site{align-self:flex-start;margin-top:auto}
+@media (max-width:900px){.get{grid-template-columns:1fr}}
+@media (max-width:640px){.site-nav a:not(.cta){display:none}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="g-bloom" viewBox="0 0 40 40"><path d="M20 5C27 13 27.5 26 20 34C12.5 26 13 13 20 5Z" fill="currentColor"/><path d="M20 34C9 33 4 23 5 15C13 17 18.5 25 20 34Z" fill="currentColor" opacity=".72"/><path d="M20 34C31 33 36 23 35 15C27 17 21.5 25 20 34Z" fill="currentColor" opacity=".72"/></symbol>
+    <symbol id="g-seed" viewBox="0 0 40 40"><ellipse cx="20" cy="22" rx="8" ry="10" fill="currentColor"/><circle cx="20" cy="15" r="2" fill="var(--ground)"/></symbol>
+    <symbol id="g-leaf" viewBox="0 0 40 40"><circle cx="20" cy="21" r="14" fill="currentColor"/><path d="M20 21L20 7" stroke="var(--ground)" stroke-width="2"/><path d="M20 21L9 12M20 21L31 12M20 21L8 26M20 21L32 26" stroke="var(--ground)" stroke-width="1" opacity=".6"/></symbol>
+    <symbol id="g-bud" viewBox="0 0 40 40"><path d="M20 4C29 13 29.5 27 20 35C10.5 27 11 13 20 4Z" fill="currentColor"/><path d="M20 35L20 39" stroke="currentColor" stroke-width="2"/></symbol>
+  </defs>
+</svg>
+
+<header class="hero wrap">
+  <canvas id="pond" aria-hidden="true"></canvas>
+  <div class="topbar">
+    <div class="brand"><svg style="color:var(--lotus)"><use href="#g-bloom"/></svg>Sen</div>
+    <nav class="site-nav" aria-label="Trang"><a href="#screens">Mockup</a><a href="#ethics">Đạo đức AI</a><a href="#impact">Tác động lâu dài</a><a class="cta" href="app/">Dùng thử</a></nav>
+  </div>
+  <h1><span class="heavy">Từ bùn,</span><span class="light">nở thành <em>sen</em>.</span></h1>
+  <p class="lede">Sen là ứng dụng AI đồng hành chữa lành tâm lý cho người trẻ Việt. Mỗi tối bạn check-in một phút, Sen giúp gọi tên cảm xúc và gợi ý một bước nhỏ. Sen được thiết kế để sau vài tháng, bạn cần đến nó ít đi.</p>
+  <dl class="facts">
+    <div><dt>Dành cho</dt><dd>Người trẻ 15–25 tuổi</dd></div>
+    <div><dt>Nền tảng</dt><dd>iOS và Android</dd></div>
+    <div><dt>Thước đo thành công</dt><dd>Chỉ số WHO-5, không phải thời gian dùng app</dd></div>
+  </dl>
+  <div class="cta-row"><a class="btn-site" href="app/">Dùng thử bản web</a><a class="btn-site ghost" href="#get">Tải app</a></div>
+</header>
+
+<main class="wrap">
+<section class="block" id="screens">
+  <div class="sec-head">
+    <div><span class="eyebrow">Mockup · 3 màn hình</span><h2>Chạm thử được</h2></div>
+    <p>Ba màn là một luồng thật: tích đồng ý ở màn Chào mừng, đổi câu trả lời ở màn Check-in, và màn Kết quả thay đổi theo. Rê chuột lên các nhãn hồng dưới mỗi màn để xem nguyên tắc đạo đức nằm ở đâu trên giao diện.</p>
+  </div>
+
+  <div class="screens">
+    <!-- Screen 1: Welcome -->
+    <figure class="screen">
+      <div class="phone" id="phone-1">
+        <div class="phone-screen">
+          <div class="status"><span>21:30</span><span>5G ▮▮▮</span></div>
+          <div class="app">
+            <svg style="width:44px;height:44px;color:var(--lotus);margin-top:10px"><use href="#g-bloom"/></svg>
+            <h4 class="a-title">Chào bạn.<br>Ở đây không ai vội.</h4>
+            <p class="a-sub">Sen giúp bạn gọi tên cảm xúc, thử những bài tập nhỏ và dần tự đứng vững.</p>
+            <ul class="promise">
+              <li data-spot="w-ai"><svg viewBox="0 0 28 28" fill="none" stroke="var(--leaf)" stroke-width="1.8"><rect x="5" y="7" width="18" height="14" rx="4"/><circle cx="11" cy="14" r="1.4" fill="var(--leaf)"/><circle cx="17" cy="14" r="1.4" fill="var(--leaf)"/><path d="M14 3v4"/></svg><div><b>Sen là AI, không phải nhà trị liệu</b><span>Sen có thể sai. Sen không chẩn đoán bệnh.</span></div></li>
+              <li data-spot="w-data"><svg viewBox="0 0 28 28" fill="none" stroke="var(--leaf)" stroke-width="1.8"><rect x="6" y="12" width="16" height="11" rx="3"/><path d="M9.5 12V9a4.5 4.5 0 0 1 9 0v3"/></svg><div><b>Nhật ký là của bạn</b><span>Chỉ lưu trên máy bạn. Không dùng để huấn luyện AI hay quảng cáo.</span></div></li>
+              <li data-spot="w-human"><svg viewBox="0 0 28 28" fill="none" stroke="var(--leaf)" stroke-width="1.8"><circle cx="10" cy="10" r="3.5"/><circle cx="19" cy="11" r="3"/><path d="M3.5 23c.8-4.5 3.4-7 6.5-7s5.7 2.5 6.5 7M16 17.5c1-.9 2-1.3 3-1.3 2.6 0 4.6 2.2 5.2 6"/></svg><div><b>Khi bạn gặp nguy hiểm</b><span>Sen dừng lại và kết nối bạn với người thật.</span></div></li>
+            </ul>
+            <label class="consent" data-spot="w-consent" for="consent"><input type="checkbox" id="consent"><span>Mình hiểu Sen không thay thế bác sĩ hay chuyên gia tâm lý, và đồng ý lưu check-in trên máy này.</span></label>
+            <button class="btn" id="start" disabled>Bắt đầu check-in</button>
+          </div>
+          <div class="sos" data-spot="w-sos"><span>Cần giúp ngay?</span><button type="button" data-call="111">Gọi 111 · 24/7</button></div>
+        </div>
+      </div>
+      <figcaption class="cap">
+        <span class="eyebrow">Màn 1</span>
+        <h3>Chào mừng</h3>
+        <p>Nói rõ Sen là gì và không là gì trước khi xin bất kỳ dữ liệu nào. Nút bắt đầu chỉ mở khi bạn tự tích đồng ý.</p>
+        <div class="ethic-chips">
+          <button type="button" data-target="w-ai">Minh bạch</button>
+          <button type="button" data-target="w-consent,w-data">Đồng thuận</button>
+          <button type="button" data-target="w-human,w-sos">An toàn</button>
+        </div>
+      </figcaption>
+    </figure>
+
+    <!-- Screen 2: Input -->
+    <figure class="screen">
+      <div class="phone" id="phone-2">
+        <div class="phone-screen">
+          <div class="status"><span>21:31</span><span>5G ▮▮▮</span></div>
+          <div class="app">
+            <div><span class="eyebrow">Thứ Hai, 14/9 · Check-in tối</span><h4 class="a-title" style="margin-top:4px">Lúc này bạn thấy thế nào?</h4></div>
+            <div>
+              <div class="mood" role="radiogroup" aria-label="Tâm trạng" id="mood"></div>
+              <p class="mood-name" id="mood-name"></p>
+            </div>
+            <div>
+              <p class="a-label">Cảm xúc gần nhất <small>chọn nhiều</small></p>
+              <div class="chips" id="emotions"></div>
+            </div>
+            <div>
+              <p class="a-label">Điều gì đang ảnh hưởng?</p>
+              <div class="chips" id="triggers"></div>
+            </div>
+            <div>
+              <p class="a-label"><label for="sleep">Giấc ngủ đêm qua</label> <output id="sleep-out" for="sleep" style="color:var(--ink);font-variant-numeric:tabular-nums">5 giờ</output></p>
+              <input class="range" type="range" id="sleep" min="0" max="12" step="0.5" value="5">
+              <div class="scale"><span>0</span><span>6</span><span>12 giờ</span></div>
+            </div>
+            <div data-spot="i-free">
+              <p class="a-label"><label for="journal">Kể thêm nếu bạn muốn</label> <small>không bắt buộc · <span class="tag">mẫu</span></small></p>
+              <textarea id="journal">Tuần sau thi cuối kỳ mà mình chưa ôn được mấy. Tối nào cũng thức tới 2h, sáng dậy đầu nặng trĩu.</textarea>
+            </div>
+            <div data-spot="i-privacy" style="display:flex;flex-direction:column;gap:10px">
+              <label class="switch" for="incognito"><span><b>Không lưu lần này</b><small>Sen vẫn gợi ý, rồi quên ngay</small></span><input type="checkbox" id="incognito"></label>
+              <p class="lockline"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="7" width="10" height="7" rx="2"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>Chỉ lưu trên máy này · Tự xóa sau 90 ngày</p>
+            </div>
+            <button class="btn" id="submit">Xem gợi ý</button>
+          </div>
+          <div class="sos"><span>Cần giúp ngay?</span><button type="button" data-call="111">Gọi 111 · 24/7</button></div>
+        </div>
+      </div>
+      <figcaption class="cap">
+        <span class="eyebrow">Màn 2</span>
+        <h3>Check-in</h3>
+        <p>Một phút, chạm là xong. Phần viết là tùy chọn; tâm trạng, cảm xúc và giấc ngủ đã đủ để Sen gợi ý.</p>
+        <div class="ethic-chips">
+          <button type="button" data-target="i-privacy">Quyền riêng tư</button>
+          <button type="button" data-target="i-free">Tự quyết</button>
+        </div>
+      </figcaption>
+    </figure>
+
+    <!-- Screen 3: Result -->
+    <figure class="screen">
+      <div class="phone" id="phone-3">
+        <div class="phone-screen">
+          <div class="status"><span>21:32</span><span>5G ▮▮▮</span></div>
+          <div class="app" id="result" aria-live="polite"></div>
+          <div class="sos"><span>Cần giúp ngay?</span><button type="button" data-call="111">Gọi 111 · 24/7</button></div>
+        </div>
+      </div>
+      <figcaption class="cap">
+        <span class="eyebrow">Màn 3</span>
+        <h3>Kết quả</h3>
+        <p>Phản chiếu cảm xúc, một bài tập 2 phút, một kỹ năng mang theo và lời nhắc kết nối người thật. Viết câu có dấu hiệu nguy cơ, màn này chuyển sang chế độ an toàn.</p>
+        <div class="ethic-chips">
+          <button type="button" data-target="r-why">Giải thích được</button>
+          <button type="button" data-target="r-fine">Không chẩn đoán</button>
+          <button type="button" data-target="r-human,r-refer">Kết nối người thật</button>
+        </div>
+        <div class="demo-links">
+          <button type="button" id="demo-crisis">Thử kịch bản có dấu hiệu nguy cơ</button>
+          <button type="button" id="demo-calm">Thử ngày nhẹ nhõm</button>
+        </div>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="block" id="ethics">
+  <div class="sec-head">
+    <div><span class="eyebrow">Tiêu chí 1</span><h2>Đạo đức AI</h2></div>
+    <p>Với sức khỏe tinh thần, một câu trả lời sai lúc người dùng đang yếu nhất có thể gây hại thật. Vì vậy AI trong Sen không được nói tự do: một lớp an toàn luôn chạy trước, và AI chỉ được chọn bài tập từ một thư viện cố định, do chuyên gia tâm lý duyệt trước khi phát hành.</p>
+  </div>
+
+  <div class="flow" aria-label="Luồng xử lý một lần check-in">
+    <div class="node"><b>Check-in</b><span>Tâm trạng, cảm xúc, giấc ngủ, nhật ký</span></div>
+    <div class="node gate"><b>Lớp an toàn</b><span>Bộ nhận diện cụm từ nguy cơ, chạy trên máy, trước mọi gợi ý</span></div>
+    <div class="fork">
+      <div class="node stop"><b>Có dấu hiệu nguy cơ</b><span>AI dừng hẳn. Hiện đường dây nóng và người thân tin cậy.</span></div>
+      <div class="node"><b>Bình thường</b><span>Chọn bài tập từ thư viện cố định theo quy tắc, không tự bịa kỹ thuật mới</span></div>
+    </div>
+    <div class="node"><b>Kết quả</b><span>Kèm lời giải thích “Vì sao Sen nói vậy?”</span></div>
+  </div>
+
+  <ul class="principles">
+    <li>
+      <div><h3>Minh bạch</h3><p class="gist">Người dùng luôn biết mình đang nói chuyện với ai.</p></div>
+      <p class="do-dont do"><span class="k">Sen làm</span>Tự giới thiệu là AI ngay màn đầu. Mỗi gợi ý có mục “Vì sao Sen nói vậy?” liệt kê đúng dữ liệu đã dùng.</p>
+      <p class="do-dont dont"><span class="k">Sen không làm</span>Giả làm người thật, xưng “bác sĩ” hay “chuyên gia”, hoặc giấu lý do đưa ra gợi ý.</p>
+    </li>
+    <li>
+      <div><h3>Đồng thuận và riêng tư</h3><p class="gist">Nhật ký cảm xúc là dữ liệu nhạy cảm nhất của một người.</p></div>
+      <p class="do-dont do"><span class="k">Sen làm</span>Xin đồng ý rõ ràng. Chỉ lưu trên máy, không có máy chủ nhận nhật ký. Có chế độ “Không lưu lần này”, xóa từng mục hoặc xóa tất cả bằng một chạm.</p>
+      <p class="do-dont dont"><span class="k">Sen không làm</span>Bán dữ liệu, dùng nhật ký để huấn luyện mô hình hay nhắm quảng cáo, chia sẻ với trường học hoặc gia đình khi chưa được phép.</p>
+    </li>
+    <li>
+      <div><h3>An toàn trước tiên</h3><p class="gist">Khi nghi ngờ, chọn báo nhầm hơn là bỏ sót.</p></div>
+      <p class="do-dont do"><span class="k">Sen làm</span>Phát hiện dấu hiệu tự hại, dừng mọi gợi ý tự động, đưa số 111, 096 306 1414 và 115. Nút gọi khẩn cấp có ở mọi màn.</p>
+      <p class="do-dont dont"><span class="k">Sen không làm</span>Cố “tự xử lý” khủng hoảng bằng chatbot, hoặc khuyên chung chung kiểu “cố lên nhé”.</p>
+    </li>
+    <li>
+      <div><h3>Không chẩn đoán</h3><p class="gist">Sen nói về cảm xúc và kỹ năng, không nói về bệnh.</p></div>
+      <p class="do-dont do"><span class="k">Sen làm</span>Khi tâm trạng thấp kéo dài hoặc WHO-5 từ 50 trở xuống, gợi ý nhẹ nhàng gặp chuyên gia và chỉ nơi hỗ trợ miễn phí.</p>
+      <p class="do-dont dont"><span class="k">Sen không làm</span>Dán nhãn “bạn bị trầm cảm”, chấm điểm bệnh, gợi ý thuốc.</p>
+    </li>
+    <li>
+      <div><h3>Tôn trọng quyền tự quyết</h3><p class="gist">Người dùng là người lái, Sen chỉ gợi ý.</p></div>
+      <p class="do-dont do"><span class="k">Sen làm</span>Mọi câu hỏi đều bỏ qua được. Bạn tự chọn giờ và tần suất nhắc. Sen không bao giờ tự gửi tin nhắn thay bạn.</p>
+      <p class="do-dont dont"><span class="k">Sen không làm</span>Ra lệnh, phán xét, hoặc làm bạn thấy có lỗi vì bỏ lỡ một ngày.</p>
+    </li>
+    <li>
+      <div><h3>Không thao túng sự chú ý</h3><p class="gist">App sức khỏe tinh thần không được thiết kế để gây nghiện.</p></div>
+      <p class="do-dont do"><span class="k">Sen làm</span>Phiên ngắn, gợi ý nghỉ sau 15 phút. Tối đa một thông báo mỗi ngày và tắt được hoàn toàn.</p>
+      <p class="do-dont dont"><span class="k">Sen không làm</span>Chuỗi ngày liên tiếp, huy hiệu, bảng xếp hạng, thông báo kiểu “Sen nhớ bạn lắm đó”.</p>
+    </li>
+    <li>
+      <div><h3>Công bằng và hợp văn hóa</h3><p class="gist">Không có một khuôn “khỏe mạnh” cho tất cả mọi người.</p></div>
+      <p class="do-dont do"><span class="k">Sen làm</span>Ngôn ngữ trung tính giới, hiểu bối cảnh Việt: áp lực thi cử, kỳ vọng gia đình. Kiểm thử thiên kiến định kỳ với nhiều nhóm người dùng, vùng miền.</p>
+      <p class="do-dont dont"><span class="k">Sen không làm</span>Dịch máy nguyên nội dung nước ngoài, hoặc đối xử khác nhau theo giới tính, xu hướng tính dục, hoàn cảnh kinh tế.</p>
+    </li>
+  </ul>
+</section>
+
+<section class="block" id="impact">
+  <div class="sec-head">
+    <div><span class="eyebrow">Tiêu chí 2</span><h2>Tác động lâu dài</h2></div>
+    <p>Phần lớn app đo thành công bằng số phút người dùng ở lại. Sen đo ngược lại: bạn khỏe lên theo thang WHO-5 của Tổ chức Y tế Thế giới, và cần Sen ít đi. Hành trình đi theo bốn giai đoạn của cây sen, mỗi giai đoạn Sen lùi lại một bước.</p>
+  </div>
+
+  <ol class="stages">
+    <li class="stage">
+      <span class="glyph"><svg style="color:var(--ink-3)"><use href="#g-seed"/></svg></span>
+      <span class="when">Tuần 1–2</span>
+      <h3>Hạt<small>Gọi tên cảm xúc</small></h3>
+      <dl>
+        <div><dt>Bạn học được</dt><dd>Phân biệt “lo âu” với “mệt mỏi”, thói quen check-in 1 phút</dd></div>
+        <div><dt>Sen làm</dt><dd>Nhắc nhẹ 1 lần/ngày, vào giờ bạn chọn</dd></div>
+        <div><dt>Đo bằng</dt><dd>WHO-5 lần đầu làm mốc</dd></div>
+      </dl>
+    </li>
+    <li class="stage">
+      <span class="glyph"><svg style="color:var(--leaf)"><use href="#g-leaf"/></svg></span>
+      <span class="when">Tháng 1</span>
+      <h3>Lá<small>Có công cụ trong tay</small></h3>
+      <dl>
+        <div><dt>Bạn học được</dt><dd>Thở hộp, tiếp đất 5-4-3-2-1, viết lại suy nghĩ, vệ sinh giấc ngủ</dd></div>
+        <div><dt>Sen làm</dt><dd>Gợi ý đúng lúc; nhắc giảm còn 3 lần/tuần</dd></div>
+        <div><dt>Đo bằng</dt><dd>WHO-5 mỗi 2 tuần</dd></div>
+      </dl>
+    </li>
+    <li class="stage">
+      <span class="glyph"><svg style="color:var(--lotus);opacity:.75"><use href="#g-bud"/></svg></span>
+      <span class="when">Tháng 3</span>
+      <h3>Nụ<small>Tự nhận ra quy luật</small></h3>
+      <dl>
+        <div><dt>Bạn học được</dt><dd>“Mình hay lo vào tuần thi”; chủ động tìm bạn bè, gia đình</dd></div>
+        <div><dt>Sen làm</dt><dd>Hỏi “Tuần này bạn tự làm được bước nào?” trước khi gợi ý</dd></div>
+        <div><dt>Đo bằng</dt><dd>Số lần tự dùng kỹ năng ngoài app</dd></div>
+      </dl>
+    </li>
+    <li class="stage">
+      <span class="glyph"><svg style="color:var(--lotus)"><use href="#g-bloom"/></svg></span>
+      <span class="when">Tháng 6 trở đi</span>
+      <h3>Hoa<small>Tốt nghiệp</small></h3>
+      <dl>
+        <div><dt>Bạn học được</dt><dd>Tự điều chỉnh; biết khi nào cần người thật</dd></div>
+        <div><dt>Sen làm</dt><dd>Đề xuất tắt nhắc nhở, xuất “sổ kỹ năng của bạn” để giữ lại</dd></div>
+        <div><dt>Đo bằng</dt><dd>WHO-5 ổn định trên 50, thời gian dùng giảm</dd></div>
+      </dl>
+    </li>
+  </ol>
+
+  <h3 class="sub">Thành công trông như thế nào</h3>
+  <div class="charts">
+    <figure class="chart" id="c-who5">
+      <h3>Điểm WHO-5 · thang 0–100</h3>
+      <p>Mục tiêu: tăng và giữ trên ngưỡng 50</p>
+      <svg viewBox="0 0 520 230" role="img" aria-label="Đường mục tiêu điểm WHO-5 tăng từ 40 ở tuần 0 lên 64 ở tuần 24"></svg>
+    </figure>
+    <figure class="chart" id="c-mins">
+      <h3>Phút dùng Sen mỗi tuần</h3>
+      <p>Mục tiêu: tăng nhẹ lúc học kỹ năng, rồi giảm dần</p>
+      <svg viewBox="0 0 520 230" role="img" aria-label="Đường mục tiêu thời gian dùng Sen, đỉnh 42 phút ở tuần 4, giảm còn 10 phút ở tuần 24"></svg>
+    </figure>
+  </div>
+  <p class="chart-note">Đây là đường mục tiêu thiết kế cho một người dùng điển hình, không phải số liệu đo thực tế.</p>
+  <details class="table-view">
+    <summary>Xem dạng bảng</summary>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Tuần</th><th>WHO-5 mục tiêu</th><th>Phút dùng/tuần mục tiêu</th></tr></thead>
+        <tbody id="target-rows"></tbody>
+      </table>
+    </div>
+  </details>
+
+  <h3 class="sub">Rủi ro dài hạn và cách giảm thiểu</h3>
+  <div class="tbl-wrap">
+    <table class="risk">
+      <thead><tr><th>Rủi ro</th><th>Dấu hiệu Sen theo dõi</th><th>Cách Sen giảm thiểu</th></tr></thead>
+      <tbody>
+        <tr><td>Phụ thuộc cảm xúc vào AI</td><td>Dùng từ 30 phút/ngày, ở 3 ngày trong tuần</td><td>Nhắc nghỉ sau 15 phút, gợi ý nói chuyện với người thật, đề xuất giảm tần suất nhắc</td></tr>
+        <tr><td>Thu mình, cô lập</td><td>Chọn cảm xúc “Cô đơn” từ 3 lần trong 2 tuần</td><td>Gợi ý bài tập “Một tin nhắn”, nhắc kết nối bạn bè, gia đình</td></tr>
+        <tr><td>Tích tụ dữ liệu nhạy cảm</td><td>Nhật ký nhiều tháng trên máy</td><td>Tự xóa sau 90 ngày (đổi được), xuất và xóa bất cứ lúc nào</td></tr>
+        <tr><td>Bỏ sót khủng hoảng</td><td>Cách nói gián tiếp, tiếng lóng mới</td><td>Ưu tiên độ nhạy cao, chuyên gia rà soát và cập nhật bộ nhận diện mỗi quý</td></tr>
+        <tr><td>Tự chẩn đoán sai</td><td>Tìm kiếm tên bệnh trong nhật ký</td><td>Không dùng nhãn lâm sàng, dẫn tới chuyên gia khi WHO-5 thấp kéo dài</td></tr>
+        <tr><td>AI nói sai, “ảo giác”</td><td>Lời khuyên sai hoặc bịa đặt</td><td>Gợi ý chỉ lấy từ thư viện cố định, không sinh câu trả lời tự do</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="block" id="get">
+  <div class="sec-head">
+    <div><span class="eyebrow">Dùng Sen</span><h2>Web, Windows hoặc Android</h2></div>
+    <p>Cả hai bản dùng chung một bộ máy gợi ý, chạy hoàn toàn trên máy bạn. Không cần tạo tài khoản, không có máy chủ lưu nhật ký.</p>
+  </div>
+  <div class="get">
+    <article>
+      <span class="eyebrow">Bản web</span>
+      <h3>Mở là dùng</h3>
+      <p class="muted">Chạy trên mọi trình duyệt, máy tính lẫn điện thoại. Mất mạng vẫn mở được.</p>
+      <ol>
+        <li>Mở Sen trên Safari của iPhone</li>
+        <li>Bấm nút Chia sẻ, chọn “Thêm vào MH chính”</li>
+        <li>Sen hiện như một app trên màn hình chính</li>
+      </ol>
+      <a class="btn-site" href="app/">Mở bản web</a>
+    </article>
+    <article>
+      <span class="eyebrow">App cài đặt</span>
+      <h3>Windows và Android</h3>
+      <p class="muted">Cài như một app bình thường, chạy không cần mạng, dữ liệu vẫn chỉ nằm trên máy bạn.</p>
+      <ol>
+        <li>Windows 10/11: tải Sen-Setup. Nếu Windows hiện “Windows protected your PC”, bấm More info → Run anyway</li>
+        <li>Android: file .apk sắp có</li>
+        <li>iPhone: dùng bản web và thêm vào màn hình chính</li>
+      </ol>
+      <a class="btn-site ghost" href="https://github.com/karl-xy1/sen-app/releases/latest">Tải app</a>
+    </article>
+  </div>
+</section>
+</main>
+
+<footer class="wrap">
+  <div><b>Đường dây hỗ trợ tại Việt Nam</b><br>111 · Tổng đài quốc gia bảo vệ trẻ em, 24/7, miễn phí<br>096 306 1414 · Đường dây nóng Ngày Mai, 8:00–20:00<br>115 · Cấp cứu y tế</div>
+  <div><b>WHO-5</b><br>Bộ 5 câu hỏi về cảm nhận hạnh phúc trong 2 tuần qua của WHO. Điểm quy đổi từ 50 trở xuống là dấu hiệu nên được tầm soát thêm.</div>
+  <div><b>Về Sen</b><br>Sen không phải sản phẩm y tế và không thay thế chuyên gia. Mockup ở trên tạo kết quả bằng quy tắc trong trình duyệt để minh họa luồng.<br><a href="privacy.html" style="color:var(--leaf)">Chính sách quyền riêng tư</a> · <a href="app/" style="color:var(--leaf)">Bản web</a></div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove('show'), 2800);
+}
+document.addEventListener('click', e => {
+  const c = e.target.closest('[data-call]');
+  if (c) toast('Trong app thật, nút này mở cuộc gọi tới ' + c.dataset.call + '.');
+});
+
+/* ---------- ethics spotlight ---------- */
+$$('.ethic-chips button').forEach(b => {
+  const ids = b.dataset.target.split(',');
+  const on = () => ids.forEach(id => $$('[data-spot="'+id+'"]').forEach(el => {
+    el.classList.add('spot');
+    const app = el.closest('.app');
+    if (app && app.contains(el)) app.scrollTo({top: Math.max(0, el.offsetTop - 80), behavior: reduce ? 'auto' : 'smooth'});
+  }));
+  const off = () => $$('.spot').forEach(el => el.classList.remove('spot'));
+  b.addEventListener('mouseenter', on); b.addEventListener('focus', on);
+  b.addEventListener('mouseleave', off); b.addEventListener('blur', off);
+});
+
+function flash(id){
+  const p = $(id);
+  if (innerWidth < 1060) p.scrollIntoView({behavior: reduce ? 'auto' : 'smooth', block:'center'});
+  p.classList.add('flash'); setTimeout(()=>p.classList.remove('flash'), 600);
+}
+
+/* ---------- screen 1 ---------- */
+$('#consent').addEventListener('change', e => { $('#start').disabled = !e.target.checked; });
+$('#start').addEventListener('click', () => { flash('#phone-2'); $('#mood input:checked').focus({preventScroll:true}); });
+
+/* ---------- screen 2 ---------- */
+const MOODS = ['Rất nặng nề','Nặng lòng','Tạm ổn','Nhẹ nhõm','Rất ổn'];
+const EMOTIONS = ['Lo âu','Mệt mỏi','Buồn','Cô đơn','Tức giận','Áp lực','Bình yên','Biết ơn'];
+const TRIGGERS = ['Học tập','Gia đình','Bạn bè','Tình cảm','Giấc ngủ','Sức khỏe','Tiền bạc'];
+
+const moodBox = $('#mood');
+MOODS.forEach((m,i) => {
+  const size = 8 + i*5;
+  moodBox.insertAdjacentHTML('beforeend',
+    `<label for="mood-${i+1}" title="${m}"><input type="radio" name="mood" id="mood-${i+1}" value="${i+1}" ${i===1?'checked':''} aria-label="${m}"><span class="dot"><i style="width:${size}px;height:${size}px"></i></span></label>`);
+});
+const setMoodName = () => { $('#mood-name').textContent = MOODS[mood()-1]; };
+moodBox.addEventListener('change', setMoodName);
+const mood = () => +$('#mood input:checked').value;
+
+function chipSet(el, list, on){
+  list.forEach(x => el.insertAdjacentHTML('beforeend', `<button type="button" aria-pressed="${on.includes(x)}">${x}</button>`));
+  el.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true');
+  });
+}
+chipSet($('#emotions'), EMOTIONS, ['Lo âu','Mệt mỏi']);
+chipSet($('#triggers'), TRIGGERS, ['Học tập','Giấc ngủ']);
+const picked = sel => $$(sel+' button[aria-pressed="true"]').map(b=>b.textContent);
+function setChips(sel, vals){ $$(sel+' button').forEach(b => b.setAttribute('aria-pressed', vals.includes(b.textContent))); }
+
+const sleep = $('#sleep');
+const fmtH = v => (Number.isInteger(+v) ? v : String(v).replace('.', ',')) + ' giờ';
+sleep.addEventListener('input', () => { $('#sleep-out').textContent = fmtH(sleep.value); });
+
+/* ---------- screen 3 logic ---------- */
+const RISK = ['tự tử','tự sát','muốn chết','không muốn sống','chẳng muốn sống','hết muốn sống','kết thúc cuộc đời','kết liễu','tự làm đau','tự làm hại','tự hại','rạch tay','cắt tay','nhảy lầu','biến mất mãi mãi','chết đi cho xong'];
+const isRisk = t => { const s = t.normalize('NFC').toLowerCase(); return RISK.some(k => s.includes(k)); };
+const joinVi = a => a.length < 2 ? (a[0]||'') : a.slice(0,-1).join(', ') + ' và ' + a[a.length-1];
+const PAST = [3,2,2,3,2,2]; // 6 ngày trước (mẫu)
+
+function sparkline(vals){
+  const w=260,h=64,px=8,py=10;
+  const x=i=>px+i*(w-2*px)/(vals.length-1), y=v=>h-py-(v-1)*(h-2*py)/4;
+  const pts=vals.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const days=['T3','T4','T5','T6','T7','CN','Nay'];
+  const last=vals.length-1;
+  return `<svg class="spark" viewBox="0 0 ${w} ${h+16}" role="img" aria-label="Tâm trạng 7 ngày: ${vals.join(', ')} trên 5">
+    <line x1="${px}" x2="${w-px}" y1="${y(3)}" y2="${y(3)}" stroke="var(--line)" stroke-dasharray="3 4"/>
+    <polygon points="${px},${h-py} ${pts} ${w-px},${h-py}" fill="var(--leaf)" fill-opacity=".12"/>
+    <polyline points="${pts}" fill="none" stroke="var(--leaf)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${x(last)}" cy="${y(vals[last])}" r="5" fill="var(--lotus)" stroke="var(--surface)" stroke-width="2"/>
+    ${days.map((d,i)=>`<text x="${x(i)}" y="${h+12}" text-anchor="middle" font-size="10" fill="var(--ink-3)">${d}</text>`).join('')}
+  </svg>`;
+}
+
+let breathTimer = null;
+function stopBreath(){ clearInterval(breathTimer); breathTimer = null; }
+
+function pickExercise(E, m){
+  if (E.includes('Lo âu') || E.includes('Áp lực')) return {k:'breath', t:'Thở hộp 4-4-4-4', d:'Nhịp thở đều giúp cơ thể ra khỏi trạng thái báo động. Làm 4 vòng, khoảng 1 phút.'};
+  if (E.includes('Tức giận')) return {k:'list', t:'Tiếp đất 5-4-3-2-1', d:'Kéo sự chú ý về hiện tại trước khi phản ứng.', steps:['5 thứ bạn nhìn thấy','4 thứ bạn chạm được','3 âm thanh bạn nghe','2 mùi bạn ngửi được','1 điều bạn biết ơn']};
+  if (E.includes('Buồn') || E.includes('Cô đơn')) return {k:'list', t:'Viết cho mình như viết cho bạn thân', d:'Tưởng tượng người bạn thân đang ở đúng hoàn cảnh của bạn.', steps:['Bạn ấy đang trải qua điều gì?','Bạn sẽ nói gì để bạn ấy thấy được hiểu?','Đọc lại câu đó, lần này cho chính mình']};
+  if (m >= 4) return {k:'list', t:'Ba điều tốt hôm nay', d:'Ghi lại lúc tâm trạng tốt giúp bạn nhớ mình từng ổn khi ngày khó đến.', steps:['Một điều nhỏ làm bạn cười','Một người đã giúp bạn','Một việc bạn tự hào']};
+  return {k:'breath', t:'Thở hộp 4-4-4-4', d:'Làm 4 vòng, khoảng 1 phút, để chậm lại một nhịp.'};
+}
+
+function render(){
+  stopBreath();
+  const box = $('#result');
+  const m = mood(), E = picked('#emotions'), T = picked('#triggers');
+  const s = +sleep.value, text = $('#journal').value.trim(), anon = $('#incognito').checked;
+
+  if (isRisk(text)) {
+    box.innerHTML = `
+      <div class="crisis">
+        <span class="eyebrow" style="color:var(--crisis)">Chế độ an toàn</span>
+        <h4 class="a-title">Cảm ơn bạn đã nói ra. Bạn không một mình.</h4>
+        <p>Những gì bạn viết cho thấy lúc này bạn có thể không an toàn. Một người thật sẽ giúp bạn tốt hơn Sen.</p>
+        <button class="callbtn first" type="button" data-call="111"><b>111</b><span>Tổng đài quốc gia bảo vệ trẻ em · 24/7, miễn phí</span><i>Gọi</i></button>
+        <button class="callbtn" type="button" data-call="096 306 1414"><b>096 306 1414</b><span>Đường dây nóng Ngày Mai · 8:00–20:00</span><i>Gọi</i></button>
+        <button class="callbtn" type="button" data-call="115"><b>115</b><span>Cấp cứu, nếu bạn đang gặp nguy hiểm ngay</span><i>Gọi</i></button>
+        <button class="btn ghost" type="button" id="trusted">Nhắn cho người mình tin tưởng</button>
+        <p>Nếu được, hãy ở gần một người khác và cất những thứ có thể làm bạn đau ra xa.</p>
+        <p class="paused">Sen đã tạm dừng mọi gợi ý tự động để không nói sai điều gì lúc này. Khi bạn sẵn sàng, Sen vẫn ở đây.</p>
+      </div>`;
+    $('#trusted').onclick = () => toast('Sen mở danh bạ để bạn tự chọn. Sen không tự gửi tin thay bạn.');
+    return;
+  }
+
+  const open = m <= 2 ? 'Hôm nay có vẻ nặng với bạn.' : m === 3 ? 'Hôm nay của bạn có vẻ lưng chừng.' : 'Thật vui khi hôm nay nhẹ hơn một chút.';
+  const TL = T.filter(x => x !== 'Giấc ngủ').map(x => x.toLowerCase());
+  let body = E.length ? ` Bạn đang thấy <b>${joinVi(E.map(x=>x.toLowerCase()))}</b>${TL.length ? ', nhất là chuyện ' + joinVi(TL) : ''}.` : (TL.length ? ` Chuyện ${joinVi(TL)} đang chiếm nhiều chỗ trong đầu bạn.` : '');
+  if (s < 6) body += ` Chỉ ngủ ${fmtH(s)} cũng làm mọi cảm xúc nặng hơn thường lệ.`;
+  const exam = /\bthi\b|kiểm tra|deadline/i.test(text) || T.includes('Học tập');
+  if (m <= 3) body += (E.includes('Lo âu') && exam)
+    ? ' Lo lắng trước kỳ thi là phản ứng rất thường gặp. Nó không có nghĩa là bạn yếu đuối.'
+    : ' Những cảm xúc này đều có lý do, và bạn không cần vội sửa chúng.';
+
+  const ex = pickExercise(E, m);
+  const exHtml = ex.k === 'breath'
+    ? `<div class="box-breath" id="breath"><span class="runner"></span><div><span class="phase" id="phase">Sẵn sàng</span><span class="count" id="count">4 vòng</span></div></div>
+       <button class="btn small" type="button" id="breath-btn" style="align-self:center">Bắt đầu thở</button>`
+    : `<ol class="steps">${ex.steps.map(x=>`<li>${x}</li>`).join('')}</ol>`;
+
+  const keep = [];
+  if (T.includes('Học tập')) keep.push('Chia nhỏ việc ôn: chọn 1 chương, học 25 phút rồi nghỉ 5 phút. Xong một vòng là đủ cho tối nay.');
+  if (s < 6 || T.includes('Giấc ngủ')) keep.push('Đêm nay: đặt giờ đi ngủ lúc 23:00 và để điện thoại ngoài tầm tay.');
+  if (T.includes('Gia đình')) keep.push('Viết ra một điều bạn muốn gia đình hiểu. Chưa cần nói ngay.');
+  if (T.includes('Bạn bè') || T.includes('Tình cảm')) keep.push('Trước khi trả lời một tin nhắn khó, đợi 10 phút rồi đọc lại.');
+  if (T.includes('Tiền bạc')) keep.push('Ghi 3 khoản chi lớn nhất tuần này. Nhìn rõ con số thường bớt đáng sợ.');
+  if (T.includes('Sức khỏe')) keep.push('Uống một cốc nước và đi bộ 10 phút ngoài trời.');
+  if (!keep.length) keep.push(m >= 4 ? 'Ghi chú lại điều gì đã giúp hôm nay tốt hơn, để dùng lại khi cần.' : 'Chọn một việc nhỏ nhất có thể làm trong 5 phút tới, và chỉ làm việc đó.');
+
+  const human = E.includes('Cô đơn')
+    ? 'Cô đơn dịu đi khi có người nghe. Thử nhắn một người: “Tối nay rảnh nói chuyện 10 phút không?”'
+    : m <= 3 ? 'Có ai bạn tin để kể chuyện này không? Một tin nhắn ngắn cũng đủ.' : 'Chia sẻ niềm vui hôm nay với một người thân cũng là một cách giữ nó lâu hơn.';
+
+  const week = [...PAST, m];
+  const low = week.filter(v => v <= 2).length;
+  const refer = low >= 5 ? `
+    <div class="note-warn" data-spot="r-refer">
+      <p><b>Tâm trạng thấp ${low}/7 ngày qua.</b> Nói chuyện với chuyên gia tâm lý có thể giúp. Đây không phải chẩn đoán, chỉ là một gợi ý.</p>
+      <button class="btn small ghost" type="button" id="refer-btn" style="align-self:start">Xem nơi hỗ trợ miễn phí</button>
+    </div>` : '';
+
+  box.innerHTML = `
+    <div><span class="eyebrow">Sen nghe thấy bạn</span></div>
+    <p class="reflect">${open}${body}</p>
+    <details class="why" data-spot="r-why">
+      <summary>Vì sao Sen nói vậy?</summary>
+      <ul>
+        <li>Tâm trạng: ${m}/5 (${MOODS[m-1]})</li>
+        <li>Cảm xúc: ${E.join(', ') || 'không chọn'}</li>
+        <li>Chủ đề: ${T.join(', ') || 'không chọn'}</li>
+        <li>Giấc ngủ: ${fmtH(s)}</li>
+        <li>Nhật ký: ${text ? 'có, chỉ phân tích trên máy' : 'không có'}</li>
+      </ul>
+      <p style="margin-top:6px">Bài tập được chọn theo quy tắc từ thư viện có sẵn của Sen. Sen không dùng dữ liệu nào khác.${anon ? ' Lần check-in này sẽ không được lưu.' : ''}</p>
+    </details>
+    <div class="exercise">
+      <span class="eyebrow" style="color:var(--leaf)">Thử ngay · 2 phút</span>
+      <h4>${ex.t}</h4>
+      <p class="muted" style="font-size:13px">${ex.d}</p>
+      ${exHtml}
+      <button type="button" id="skip" style="border:0;background:none;padding:0;font-size:12px;color:var(--ink-3);cursor:pointer;align-self:center">Để sau cũng được</button>
+    </div>
+    <div class="r-sec"><h4>Kỹ năng mang theo</h4><ul class="keep">${keep.slice(0,2).map(k=>`<li>${k}</li>`).join('')}</ul></div>
+    <div class="r-sec" data-spot="r-human"><h4>Kết nối người thật</h4><p>${human}</p>
+      <button class="btn small ghost" type="button" id="msg-btn" style="margin-top:8px">Soạn tin nhắn</button></div>
+    <div class="r-sec"><h4>7 ngày qua</h4>${sparkline(week)}</div>
+    ${refer}
+    <div class="fine" data-spot="r-fine"><span>Sen là AI và có thể sai. Đây không phải chẩn đoán y khoa.</span><button type="button" id="del">${anon ? 'Không lưu' : 'Xóa mục này'}</button></div>`;
+
+  $('#msg-btn').onclick = () => toast('Sen soạn nháp, bạn tự chọn người nhận và tự bấm gửi.');
+  $('#skip').onclick = () => toast('Không sao. Gợi ý này sẽ không nhắc lại tối nay.');
+  $('#del').onclick = () => toast(anon ? 'Lần check-in này chưa từng được lưu.' : 'Đã xóa lần check-in này khỏi máy.');
+  const rb = $('#refer-btn'); if (rb) rb.onclick = () => toast('Mở danh sách: 096 306 1414 (Ngày Mai), 111, phòng tư vấn tâm lý của trường.');
+  const bb = $('#breath-btn');
+  if (bb) bb.onclick = () => {
+    const el = $('#breath');
+    if (breathTimer) { stopBreath(); el.classList.remove('on'); $('#phase').textContent='Sẵn sàng'; $('#count').textContent='4 vòng'; bb.textContent='Bắt đầu thở'; return; }
+    const P = ['Hít vào','Giữ','Thở ra','Giữ']; let step = 0, sec = 4;
+    el.classList.add('on'); bb.textContent = 'Dừng';
+    const tick = () => {
+      $('#phase').textContent = P[step % 4];
+      $('#count').textContent = sec + ' giây · vòng ' + (Math.floor(step/4)+1) + '/4';
+      if (--sec === 0) { sec = 4; step++; }
+      if (step >= 16) { stopBreath(); el.classList.remove('on'); $('#phase').textContent = 'Xong rồi'; $('#count').textContent = 'Bạn thấy sao?'; bb.textContent = 'Làm lại'; }
+    };
+    tick(); breathTimer = setInterval(tick, 1000);
+  };
+}
+
+function submit(){
+  const box = $('#result'); box.classList.add('loading');
+  setTimeout(() => { render(); box.scrollTop = 0; box.classList.remove('loading'); }, 260);
+  flash('#phone-3');
+}
+$('#submit').addEventListener('click', submit);
+$('#demo-crisis').addEventListener('click', () => {
+  $('#journal').value = 'Dạo này mình mệt lắm, nhiều lúc không muốn sống nữa.';
+  $('#mood-1').checked = true; setMoodName(); setChips('#emotions',['Buồn','Mệt mỏi']); submit();
+});
+$('#demo-calm').addEventListener('click', () => {
+  $('#journal').value = 'Thi xong môn đầu rồi, tối nay đi ăn với nhóm bạn.';
+  $('#mood-4').checked = true; setMoodName(); setChips('#emotions',['Bình yên','Biết ơn']); setChips('#triggers',['Bạn bè']);
+  sleep.value = 7.5; $('#sleep-out').textContent = fmtH(7.5); submit();
+});
+
+setMoodName(); render();
+
+/* ---------- target charts ---------- */
+const WEEKS = [0,4,8,12,16,20,24];
+const WHO5 = [40,45,51,55,59,62,64];
+const MINS = [35,42,38,30,22,15,10];
+$('#target-rows').innerHTML = WEEKS.map((w,i)=>`<tr><td class="num">${w}</td><td class="num">${WHO5[i]}</td><td class="num">${MINS[i]}</td></tr>`).join('');
+
+function chart(fig, data, max, ticks, unit, threshold){
+  const svg = fig.querySelector('svg'), NS = 'http://www.w3.org/2000/svg';
+  const W=520,H=230,L=36,R=18,Tp=14,B=34;
+  const x = i => L + i*(W-L-R)/(data.length-1), y = v => Tp + (1 - v/max)*(H-Tp-B);
+  let h = '';
+  ticks.forEach(t => { h += `<line x1="${L}" x2="${W-R}" y1="${y(t)}" y2="${y(t)}" stroke="var(--line)" stroke-width="1"/><text x="${L-8}" y="${y(t)+4}" text-anchor="end">${t}</text>`; });
+  WEEKS.forEach((w,i) => { h += `<text x="${x(i)}" y="${H-12}" text-anchor="middle">${i===0?'Tuần 0':w}</text>`; });
+  if (threshold != null) h += `<line x1="${L}" x2="${W-R}" y1="${y(threshold)}" y2="${y(threshold)}" stroke="var(--lotus)" stroke-width="1.5" stroke-dasharray="5 5"/><text x="${W-R}" y="${y(threshold)-6}" text-anchor="end" style="fill:var(--ink-2)">ngưỡng ${threshold}</text>`;
+  const pts = data.map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+  h += `<polygon points="${x(0)},${y(0)} ${pts} ${x(data.length-1)},${y(0)}" fill="var(--leaf)" fill-opacity=".1"/>`;
+  h += `<polyline points="${pts}" fill="none" stroke="var(--leaf)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  const li = data.length-1;
+  h += `<circle cx="${x(li)}" cy="${y(data[li])}" r="5" fill="var(--leaf)" stroke="var(--surface)" stroke-width="2"/>`;
+  h += `<text x="${x(li)-10}" y="${y(data[li])-12}" text-anchor="end" style="fill:var(--ink);font-weight:600">${data[li]}</text>`;
+  h += `<line class="xh" x1="0" x2="0" y1="${Tp}" y2="${H-B}" stroke="var(--ink-3)" stroke-width="1" visibility="hidden"/>`;
+  h += `<circle class="xd" r="5" fill="var(--leaf)" stroke="var(--surface)" stroke-width="2" visibility="hidden"/>`;
+  h += `<rect class="hit" x="${L}" y="0" width="${W-L-R}" height="${H-B}" fill="transparent"/>`;
+  svg.innerHTML = h;
+  const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; fig.appendChild(tip);
+  const xh = svg.querySelector('.xh'), xd = svg.querySelector('.xd');
+  const move = e => {
+    const r = svg.getBoundingClientRect(), sx = (e.clientX - r.left) * W / r.width;
+    const i = Math.max(0, Math.min(li, Math.round((sx - L) / ((W-L-R)/li))));
+    xh.setAttribute('x1', x(i)); xh.setAttribute('x2', x(i)); xh.setAttribute('visibility','visible');
+    xd.setAttribute('cx', x(i)); xd.setAttribute('cy', y(data[i])); xd.setAttribute('visibility','visible');
+    tip.hidden = false; tip.textContent = `Tuần ${WEEKS[i]} · ${data[i]} ${unit}`;
+    const fr = fig.getBoundingClientRect();
+    tip.style.left = (r.left - fr.left + x(i) * r.width / W) + 'px';
+    tip.style.top = (r.top - fr.top + y(data[i]) * r.height / H) + 'px';
+  };
+  const leave = () => { xh.setAttribute('visibility','hidden'); xd.setAttribute('visibility','hidden'); tip.hidden = true; };
+  const hit = svg.querySelector('.hit');
+  hit.addEventListener('pointermove', move); hit.addEventListener('pointerleave', leave);
+}
+chart($('#c-who5'), WHO5, 100, [0,25,50,75,100], 'điểm', 50);
+chart($('#c-mins'), MINS, 60, [0,20,40,60], 'phút');
+
+/* ---------- pond ripples ---------- */
+const cv = $('#pond'), ctx = cv.getContext('2d');
+let rip = [], col = '#2D6A5C', dpr = 1;
+function size(){ dpr = Math.min(2, devicePixelRatio||1); cv.width = cv.offsetWidth*dpr; cv.height = cv.offsetHeight*dpr; }
+function spawn(){
+  col = getComputedStyle(document.documentElement).getPropertyValue('--leaf').trim() || col;
+  const w = cv.width/dpr, h = cv.height/dpr;
+  rip.push({x: w*(.55 + Math.random()*.4), y: h*(.2 + Math.random()*.6), r: 0, max: 160 + Math.random()*140});
+}
+function draw(){
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.strokeStyle = col;
+  rip.forEach(p => {
+    for (let k=0;k<3;k++){
+      const rr = p.r - k*22; if (rr <= 0) continue;
+      ctx.globalAlpha = Math.max(0, .22*(1 - p.r/p.max)) * (1 - k*.28);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.ellipse(p.x, p.y, rr, rr*.42, 0, 0, Math.PI*2); ctx.stroke();
+    }
+  });
+  ctx.globalAlpha = 1;
+}
+size(); addEventListener('resize', size);
+if (reduce) {
+  spawn(); spawn(); rip.forEach(p => p.r = p.max*.45); draw();
+} else {
+  spawn(); rip[0].r = 60;
+  let last = performance.now(), acc = 0;
+  (function loop(now){
+    const dt = Math.min(50, now - last); last = now; acc += dt;
+    if (acc > 2600) { acc = 0; spawn(); }
+    rip.forEach(p => p.r += dt*.03);
+    rip = rip.filter(p => p.r < p.max);
+    draw(); requestAnimationFrame(loop);
+  })(last);
+}
+})();
+</script>
+</body>
+</html>
