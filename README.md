@@ -8,7 +8,7 @@ Sen là app đồng hành chữa lành tâm lý cho người trẻ Việt: check
 |---|---|
 | **Windows 10/11** | Tải **Sen-Setup** ở [bản phát hành mới nhất](https://github.com/karl-xy1/sen-app/releases/latest) |
 | **Android** | Tải file **.apk** ở [bản phát hành mới nhất](https://github.com/karl-xy1/sen-app/releases/latest) |
-| **iPhone, iPad** | Mở [karl-xy1.github.io/sen-app/app](https://karl-xy1.github.io/sen-app/app/) bằng Safari → nút Chia sẻ → **Thêm vào MH chính** |
+| **iPhone, iPad** | Cài biểu tượng bằng [hồ sơ sen.mobileconfig](https://karl-xy1.github.io/sen-app/sen.mobileconfig) (mở bằng Safari, rồi Cài đặt → Đã tải về hồ sơ → Cài đặt), hoặc mở [karl-xy1.github.io/sen-app/app](https://karl-xy1.github.io/sen-app/app/) bằng Safari → nút Chia sẻ → **Thêm vào MH chính** |
 | **Trình duyệt bất kỳ** | Mở [karl-xy1.github.io/sen-app/app](https://karl-xy1.github.io/sen-app/app/) |
 
 Hướng dẫn cài từng bản (kể cả khi Windows hiện "Windows protected your PC") nằm trong ghi chú của [bản phát hành mới nhất](https://github.com/karl-xy1/sen-app/releases/latest).
