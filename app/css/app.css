@@ -213,3 +213,17 @@ dialog .row-actions{justify-content:flex-end;margin-top:18px}
   .breath-box.on .runner{animation:none}
   .toast,.btn{transition:none}
 }
+
+/* Đoạn mở đầu: video bay qua đầm sen, phủ toàn màn hình, chạm để bỏ qua (js/intro.js).
+   Màu cố định vì nằm trên video, giống nhau ở cả giao diện sáng và tối. Sau 16 giây tự ẩn dù JS có lỗi. */
+.intro{position:fixed;inset:0;z-index:100;background:#0d1210 center/cover no-repeat;cursor:pointer;animation:intro-failsafe 0s linear 16s forwards}
+.intro video{display:block;width:100%;height:100%;object-fit:cover}
+.intro.out{opacity:0;transition:opacity .45s ease}
+.intro-word{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 9%);display:grid;justify-items:center;gap:6px;color:#fff;text-align:center;text-shadow:0 2px 18px rgba(0,0,0,.45);opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease;pointer-events:none}
+.intro-word.on{opacity:1;transform:none}
+.intro-word b{font:700 46px/1 var(--f-display);font-variation-settings:"wdth" 80;letter-spacing:-.01em}
+.intro-word span{font-size:15px;letter-spacing:.04em}
+.intro-skip{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:calc(env(safe-area-inset-right,0px) + 14px);min-height:40px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(15,21,19,.38);color:#fff;font:600 14px/1 var(--f-body);cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.intro-skip:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@keyframes intro-failsafe{to{visibility:hidden;pointer-events:none}}
+@media (prefers-reduced-motion:reduce){.intro-word{transition:none}}

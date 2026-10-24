@@ -211,7 +211,7 @@ export function settings(app) {
       <section class="section">
         <h2 class="title-sm" style="font-size:18px">Về Sen</h2>
         <p class="small muted">Sen là AI, không phải nhà trị liệu, và có thể sai. Gợi ý được chọn theo quy tắc từ thư viện bài tập có sẵn, chạy hoàn toàn trên máy bạn.</p>
-        <p class="small"><a href="../">Trang giới thiệu</a> · <a href="../privacy.html">Chính sách quyền riêng tư</a> · Phiên bản 1.0.0</p>
+        <p class="small"><a href="../">Trang giới thiệu</a> · <a href="../privacy.html">Chính sách quyền riêng tư</a> · Phiên bản 1.0.2</p>
       </section>`,
     mount(root) {
       root.querySelector('#retention').onchange = (e) => {
